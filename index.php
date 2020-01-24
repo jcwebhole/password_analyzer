@@ -8,37 +8,75 @@
 	#preloader{
 		display: none;
 	}
-	#form{
+	body{
 		text-align: center;
+	}
+	#result2{
+		margin: 10px 5%;
+		border: 1px solid #9a9a9a;
+		padding: 10px;
+		text-align: left;
+		display: none;
 	}
 </style>
 <script src="zxcvbn.js"></script>
 </head>
 <body>
-<div id="form">
-<img src="images/goku001.gif"><br>
+<img id="goku" src="images/goku001.gif"><br>
 <div id="result">Power Level: 0</div><br>
+<div id="result2"></div>
+<div id="form">
 Full Name<br><input id="fn" type="text"><br>
 Password<br><input id="pw" type="password" onkeyup="assess()" onkeydown="setTimeout(resetGoku, 1000)"><br>
 <br>
-<button>Go to battle</button>
+<button onclick="goBattle()">Go to battle</button>
 </div>
 <script>
 var current = 'norm';
 function assess(){
-	window.clearTimeout();
 	pw = document.querySelector('#pw').value;
 	var r = zxcvbn(pw);
-	console.log(r);
+	// console.log(r);
 	if(r.score<=1) current='norm';
 	if(r.score==2) current='ssj1';
 	if(r.score==3) current='ssj2';
 	if(r.score>=4) current='ssj3';
 	document.querySelector('#result').innerHTML = 'Power Level: '+parseInt(r.guesses_log10*100);
-	document.querySelector('#form img').src = document.querySelector('#'+current+'-charge').src;
+	document.querySelector('#goku').src = document.querySelector('#'+current+'-charge').src;
 }
 function resetGoku(){
-	document.querySelector('#form img').src = document.querySelector('#'+current).src;
+	window.clearTimeout();
+	document.querySelector('#goku').src = document.querySelector('#'+current).src;
+}
+function goBattle(){
+	pw = document.querySelector('#pw').value;
+	var r = zxcvbn(pw);
+	if(r.score<=1) current='norm';
+	if(r.score==2) current='ssj1';
+	if(r.score==3) current='ssj2';
+	if(r.score>=4) current='ssj3';
+	document.querySelector('#result').innerHTML = 'Power Level: '+parseInt(r.guesses_log10*100);
+	document.querySelector('#result2').innerHTML = '<hr>';
+	document.querySelector('#result2').innerHTML+='# of Guesses: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+parseInt(r.guesses)+'<hr>'
+	document.querySelector('#result2').innerHTML+='Crack Time (Throttled Online 100/hr): <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+r.crack_times_display.online_throttling_100_per_hour+'<hr>';
+	document.querySelector('#result2').innerHTML+='Crack Time (Unthrottled Online 10/s): <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+r.crack_times_display.online_no_throttling_10_per_second+'<hr>';
+	document.querySelector('#result2').innerHTML+='Crack Time (Slow Offline Attack 100K/s): <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+r.crack_times_display.offline_slow_hashing_1e4_per_second+'<hr>';
+	document.querySelector('#result2').innerHTML+='Crack Time (Fast Offline Attack 10B/s): <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+r.crack_times_display.offline_fast_hashing_1e10_per_second+'<hr>';
+	var scoreText = 'Too guessable';
+	if(r.score==1) scoreText = 'Very guessable';
+	if(r.score==2) scoreText = 'Somewhat guessable';
+	if(r.score==3) scoreText = 'Safely unguessable';
+	if(r.score==4) scoreText = 'Very unguessable';
+	document.querySelector('#result2').innerHTML+='Score: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+scoreText+'<hr>';
+	document.querySelector('#result2').innerHTML+='Warning: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+r.feedback.warning+'<hr>';
+	if(r.feedback.suggestions.length>0){
+		for (i=0; i<r.feedback.suggestions.length; i++){
+			document.querySelector('#result2').innerHTML+='Suggestion #'+(i+1)+': <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+r.feedback.suggestions[i]+'<hr>';			
+		}
+	}
+	document.querySelector('#form').style.display = 'none';
+	document.querySelector('#result2').style.display = 'block';
+	document.querySelector('#goku').src = document.querySelector('#'+current).src;
 }
 
 
@@ -56,14 +94,7 @@ function resetGoku(){
 <img src="images/goku007.gif" id="ssj3">
 <img src="images/goku008.gif" id="ssj3-charge">
 </div>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-47293855-5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-47293855-5');
-</script>
+
 </body>
 </html>
