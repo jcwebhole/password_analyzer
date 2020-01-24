@@ -30,6 +30,7 @@ Full Name<br><input id="fn" type="text"><br>
 Password<br><input id="pw" type="password" onkeyup="assess()" onkeydown="setTimeout(resetGoku, 1000)"><br>
 <br>
 <button onclick="goBattle()">Go to battle</button>
+<br><br><br>Download:<br><a href="https://docs.google.com/presentation/d/1TlzfPznhpkd2rCjTIRLNO5rRCHAjnXa7wFw5gcxWu8w/edit?usp=sharing">Slides from Google Drive</a> | <a href="https://github.com/jcwebhole/password_analyzer">Code from Github</a>
 </div>
 <script>
 var current = 'norm';
